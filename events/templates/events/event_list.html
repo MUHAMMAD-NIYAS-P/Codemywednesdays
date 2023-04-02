@@ -6,24 +6,35 @@
     <br>
 
     {% for event in event_list %}
-        <strong>{{ event }}</strong>
-        <ul>
-            <li>Date: {{ event.event_date }}</li>
-            <li>Venue: {{ event.venue }}</li>
-            <li>Venue Address: {{ event.venue.address }}</li>
-            <li>Venue ZIP: {{ event.venue.zip_code }} , Venue Phone: {{ event.venue.phone }}, 
-                Venue Email: {{ event.venue.email_address }}, Venue Web: {{ event.venue.web }}
-            </li>
-            <li>Manager: {{ event.manager }} </li>
-            <li>Description: {{ event.description }}</li>
-            <li>Attendees: <br>
-                <ul>
-                    {% for user in event.attendees.all %}
-                    <li>{{ user }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        </ul>
+
+        <div class="card">
+            <div class="card-header">
+                {{ event }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Venue: {{ event.venue }}</h5>
+                <p class="card-text">
+
+                    <ul>
+                        <li>Date: {{ event.event_date }}</li>
+                        <li>Venue Address: {{ event.venue.address }}</li>
+                        <li>Venue ZIP: {{ event.venue.zip_code }} , Venue Phone: {{ event.venue.phone }}, 
+                            Venue Email: {{ event.venue.email_address }}, Venue Web: {{ event.venue.web }}
+                        </li>
+                        <li>Manager: {{ event.manager }} </li>
+                        <li>Description: {{ event.description }}</li>
+                        <li>Attendees: <br>
+                            <ul>
+                                {% for user in event.attendees.all %}
+                                <li>{{ user }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+
+                </p>
+            </div>
+        </div>
         <br>
     {% endfor %}
 
