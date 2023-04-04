@@ -8,7 +8,8 @@
         {% for venue in venue_list %}
         <tr>
             <td><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a><br></td>
-            <td align="right"><a href="{% url 'update-venue' venue.id %}"  class="btn btn-outline-danger btn-sm">Update</a></td>
+            <td align="right"><a href="{% url 'update-venue' venue.id %}"  class="btn btn-outline-primary btn-sm">Update</a>
+            <a href="{% url 'delete-venue' venue.id %}"  class="btn btn-outline-danger btn-sm">Delete</a></td>
         </tr>
         {% endfor %}
     </table>
