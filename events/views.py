@@ -8,8 +8,25 @@ from .forms import VenueForm, EventForm
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.contrib import messages
+import csv
 
 # Create your views here.
+
+
+def venue_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; filename=venues.csv'
+
+    writer = csv.writer(response)
+
+    venues = Venue.objects.all()
+
+    writer.writerow(['Venue Name', 'Address', 'Zip Code', 'Phone', 'Web', 'Email Address'])
+
+    for venue in venues:
+        writer.writerow([venue.name, venue.address, venue.zip_code, venue.phone, venue.web, venue.email_address])
+
+    return response
 
 
 def venue_text(request):
