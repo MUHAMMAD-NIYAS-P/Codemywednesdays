@@ -2,17 +2,35 @@ from django.shortcuts import render, redirect
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
 from django.db.models import Q
 from django.db.models.functions import Lower
+from django.contrib import messages
 
 # Create your views here.
+
+
+def venue_text(request):
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition']='attachment; filename=venues.txt'
+    venues = Venue.objects.all()
+
+    lines = []
+
+    for venue in venues:
+        lines.append(f'--{venue.name}\n--{venue.address}\n--{venue.zip_code}\n--{venue.phone}\n--{venue.web}\n--{venue.email_address}\n\n')
+    
+    response.writelines(lines)
+    return response
+    
+
 
 def delete_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     venue.delete()
+    messages.warning(request, ("Venue has been successfully deleted!"))
     return redirect('list-venues')
 
 
