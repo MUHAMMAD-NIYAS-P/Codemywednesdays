@@ -2,15 +2,61 @@ from django.shortcuts import render, redirect
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, FileResponse
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.contrib import messages
 import csv
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
 
 # Create your views here.
+
+
+def venue_pdf(request):
+
+    buf = io.BytesIO()
+
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Helvetica", 14)
+
+    # lines = [
+    #     "This is line 1",
+    #     "This is line 2",
+    #     "This is line 3",
+    #     "This is line 4",
+    # ]
+
+    venues = Venue.objects.all()
+
+    lines = []
+
+    for venue in venues:
+        lines.append(venue.name)
+        lines.append(venue.address)
+        lines.append(venue.zip_code)
+        lines.append(venue.phone)
+        lines.append(venue.web)
+        lines.append(venue.email_address)
+        lines.append(" ")
+
+
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf, as_attachment=True, filename="venues.pdf")
 
 
 def venue_csv(request):
