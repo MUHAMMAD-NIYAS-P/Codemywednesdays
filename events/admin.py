@@ -21,3 +21,8 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'event_date', 'venue')
     list_filter = ('event_date', 'venue')
     ordering = ('event_date',)
+
+
+admin.site.site_header = "My Club Administration Page"
+admin.site.site_title = "Browser Title"
+admin.site.index_title = "Welcome to admin Area"
