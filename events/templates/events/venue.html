@@ -5,7 +5,7 @@
     <h1>Venues...</h1>
     <br><br>
     <table class="table table-striped table-hover table-bordered">
-        {% for venue in venue_list %}
+        {% for venue in venues %}
         <tr>
             <td><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a><br></td>
             <td align="right"><a href="{% url 'update-venue' venue.id %}"  class="btn btn-outline-primary btn-sm">Update</a>
@@ -13,5 +13,25 @@
         </tr>
         {% endfor %}
     </table>
+    <br>
+
+    <!-- {{ venues }} <br>
+    Has Previous: {{ venues.has_previous }} <br>
+    Has Next: {{ venues.has_next }} <br>
+    Current Page: {{ venues.number }} <br>
+    No of Pages: {{ venues.paginator.num_pages }}
+    <hr><br><br> -->
+
+    {% if venues.has_previous %}
+        <a href="?page=1">&laquo First</a>
+        <a href="?page={{ venues.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    Page {{ venues.number }} of {{ venues.paginator.num_pages }}
+
+    {% if venues.has_next %}
+        <a href="?page={{ venues.next_page_number}}">Next</a>
+        <a href="?page={{ venues.paginator.num_pages }}">Last &raquo</a>
+    {% endif %}
 
 {% endblock %}
