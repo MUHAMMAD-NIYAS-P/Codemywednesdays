@@ -22,7 +22,6 @@ def register_user(request):
 
     else:
         form = RegisterUserForm()
-
         return render(request, 'authenticate/register_user.html', { 'form':form })
 
 
