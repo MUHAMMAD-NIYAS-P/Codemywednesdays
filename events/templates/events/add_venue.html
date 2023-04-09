@@ -2,7 +2,7 @@
 
 {% block content %}
 <center>
-
+    {% if user.is_authenticated %}
     <h1>Add Venue To Database</h1>
     <br><br>
 
@@ -16,6 +16,10 @@
             {{ form.as_p }}
             <input type="submit" value="Submit" class="btn btn-secondary">
         </form>
+    {% endif %}
+
+    {% else %}
+    <h1>Sorry. Please login to access this page.</h1>
     {% endif %}
     
 </center>
