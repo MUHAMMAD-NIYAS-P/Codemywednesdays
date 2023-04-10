@@ -4,7 +4,7 @@ from calendar import HTMLCalendar
 from datetime import datetime
 from django.http import HttpResponseRedirect, HttpResponse, FileResponse
 from .models import Event, Venue
-from .forms import VenueForm, EventForm
+from .forms import VenueForm, EventForm, EventFormAdmin
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.contrib import messages
@@ -106,26 +106,41 @@ def delete_event(request, event_id):
 
 def update_event(request, event_id):
     event = Event.objects.get(pk=event_id)
-    form = EventForm(request.POST or None, instance=event)
+    if request.user.is_superuser:
+        form = EventFormAdmin(request.POST or None, instance=event)
+    else:
+        form = EventForm(request.POST or None, instance=event)
+
     if form.is_valid():
         form.save()
         return redirect('list-events')
     
-    else:
-        return render(request, 'events/update_event.html', { 'event':event, 'form':form })
+    return render(request, 'events/update_event.html', { 'event':event, 'form':form })
 
 
 def add_event(request):
 
     submitted = False
     if request.method == "POST":
-        form = EventForm(request.POST)
-        if form.is_valid():
-            form.save()
-        return HttpResponseRedirect('add_event?submitted=True')
+        if request.user.is_superuser:
+            form = EventFormAdmin(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('add_event?submitted=True')
+            
+        else:
+            form = EventForm(request.POST)
+            if form.is_valid():
+                event = form.save(commit=False)
+                event.manager = request.user.id
+                event.save()
+                return HttpResponseRedirect('add_event?submitted=True')
 
     else:
-        form = EventForm
+        if request.user.is_superuser:
+            form = EventFormAdmin
+        else:
+            form = EventForm
         if 'submitted' in request.GET:
             submitted = True
         return render(request, 'events/add_event.html', { 'form':form, 'submitted':submitted })
@@ -178,7 +193,9 @@ def add_venue(request):
     if request.method == "POST":
         form = VenueForm(request.POST)
         if form.is_valid():
-            form.save()
+            venue = form.save(commit=False)
+            venue.owner = request.user.id
+            venue.save()
         return HttpResponseRedirect('add_venue?submitted=True')
 
     else:
