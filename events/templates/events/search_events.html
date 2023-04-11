@@ -1,0 +1,63 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            {% if searched %}
+                You searched for {{ searched }}
+            {% else %}
+                Search events...
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'search-events' %}">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search Events" aria-label="Search" name="searched">
+                <br>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    {% for event in events %}
+    <div class="card">
+        <div class="card-header">
+            {{ event }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Venue: {{ event.venue }}</h5>
+            <p class="card-text">
+
+                <ul>
+                    <li>Date: {{ event.event_date }}</li>
+                    <li>Venue Address: {{ event.venue.address }}</li>
+                    <li>Venue ZIP: {{ event.venue.zip_code }} , Venue Phone: {{ event.venue.phone }}, 
+                        Venue Email: {{ event.venue.email_address }}, Venue Web: {{ event.venue.web }}
+                    </li>
+                    <li>Manager: {{ event.manager }} </li>
+                    <li>Description: {{ event.description }}</li>
+                    <li>Attendees: <br>
+                        <ul>
+                            {% for user in event.attendees.all %}
+                            <li>{{ user }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+        
+            </p>
+        </div>
+        {% if user.is_authenticated %}
+        {% if user == event.manager %}
+
+            <div class="card-footer text-muted">
+                <a href="{% url 'update-event' event.id %}" class="btn btn-outline-primary btn-sm">Update Event</a>
+                <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Detete Event</a> 
+            </div>
+        {% endif %}
+        {% endif %}
+    </div>
+    <br> 
+    {% endfor %}   
+{% endblock %}
