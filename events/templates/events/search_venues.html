@@ -1,25 +1,54 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-    <center>
 
-        {% if searched %}
+    {% if searched %}
 
-            <h1>You searched for {{ searched }} .</h1>
-            <br>
-            <table class="table table-striped table-hover table-bordered">
-                {% for venue in venues %}
-                <tr>
-                    <td><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a> <br></td>
-                </tr>
-                {% endfor %}
-            </table>
+        <h1>You searched for {{ searched }}</h1>
+        <br>
+        <table class="table table-striped table-hover table-bordered">
+            {% for venue in venues %}
+            <tr>
+                <div class="card">
+                    <div class="card-header">
+                        {{ venue }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
 
-        {% else %}
+                            <ul>
+                                {% if venue.address %}
+                                <li>Venue Address: {{ venue.address }}</li>
+                                {% endif %}
+                                {% if venue.zip_code %}
+                                <li>Venue ZIP: {{ venue.zip_code }}</li>
+                                {% endif %}
+                                {% if venue.phone %}
+                                <li>Venue Phone: {{ venue.phone }}</li>
+                                {% endif %}
+                                {% if venue.email_address %}
+                                <li>Venue Email: {{ venue.email_address }}</li> 
+                                {% endif %}
+                                {% if venue.web %}
+                                <li>Venue Web: <a href="{{ venue.web }}">{{ venue.web }}</a></li> 
+                                {% endif %}
+                                {% if venue.owner %}
+                                <li>Owner ID: {{ venue.owner }}</li>
+                                {% endif %}
+                            </ul>
 
-            <h1>Hey! you forgot to search for a venue.</h1>
+                        </p>
+                    </div>
+                </div>
+                <br>
+            </tr>
+            {% endfor %}
+        </table>
 
-        {% endif %}
+    {% else %}
 
-    </center>
+        <h1>Hey! you forgot to search for a venue.</h1>
+
+    {% endif %}
+
 {% endblock %}
