@@ -14,8 +14,19 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 # Create your views here.
+
+
+def my_events(request):
+    if request.user.is_authenticated:
+        me = request.user.id
+        events = Event.objects.filter(manager=me)
+        return render(request, 'events/my_event.html', { "me":me, "events":events })
+    else:
+        messages.success(request, ("You're not auhorised to access this page."))
+        return redirect('home')
 
 
 def venue_pdf(request):
@@ -100,8 +111,13 @@ def delete_venue(request, venue_id):
 
 def delete_event(request, event_id):
     event = Event.objects.get(pk=event_id)
-    event.delete()
-    return redirect('list-events')
+    if request.user == event.manager:
+        event.delete()
+        messages.success(request, ("Event Deleted!"))
+        return redirect('list-events')
+    else:
+        messages.success(request, ("You are not allowed to delete this event."))
+        return redirect('list-events')
 
 
 def update_event(request, event_id):
@@ -132,7 +148,7 @@ def add_event(request):
             form = EventForm(request.POST)
             if form.is_valid():
                 event = form.save(commit=False)
-                event.manager = request.user.id
+                event.manager = request.user
                 event.save()
                 return HttpResponseRedirect('add_event?submitted=True')
 
@@ -172,7 +188,8 @@ def search_venues(request):
 
 def show_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
-    return render(request, 'events/show_venue.html', { 'venue': venue })
+    venue_owner = User.objects.get(pk=venue.owner)
+    return render(request, 'events/show_venue.html', { 'venue': venue, 'venue_owner': venue_owner })
 
 
 def list_venues(request):
