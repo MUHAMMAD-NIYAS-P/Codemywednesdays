@@ -252,5 +252,8 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 
     time = now.strftime('%I:%M %p')
 
+    # query the event model for dates
+    event_list = Event.objects.filter(event_date__year=year, event_date__month=month_number)
+
     return render(request, 'events/home.html', { "name": name, "year": year, "month": month, "month_number": month_number, "cal": cal,
-                                                "current_year": current_year, "time": time, })
+                                                "current_year": current_year, "time": time, "event_list":event_list })
