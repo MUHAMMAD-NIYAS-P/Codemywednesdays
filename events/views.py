@@ -207,7 +207,7 @@ def list_venues(request):
     venue_list = Venue.objects.all().order_by(Lower('name'))
 
     # Set up pagination.
-    p = Paginator(Venue.objects.all(), 2)
+    p = Paginator(Venue.objects.all(), 5)
     page = request.GET.get('page')
     venues = p.get_page(page)
     nums = "a" * venues.paginator.num_pages
@@ -219,7 +219,7 @@ def add_venue(request):
 
     submitted = False
     if request.method == "POST":
-        form = VenueForm(request.POST)
+        form = VenueForm(request.POST, request.FILES)
         if form.is_valid():
             venue = form.save(commit=False)
             venue.owner = request.user.id
