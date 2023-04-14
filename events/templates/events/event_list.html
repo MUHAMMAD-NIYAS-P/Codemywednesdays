@@ -17,6 +17,8 @@
 
                     <ul>
                         <li>Date: {{ event.event_date }}</li>
+                        <li>Days Till Event: {{ event.days_till }}</li>
+                        <li>Occured: {{ event.is_past }}</li>
                         <li>Venue Address: {{ event.venue.address }}</li>
                         <li>Venue ZIP: {{ event.venue.zip_code }} , Venue Phone: {{ event.venue.phone }}, 
                             Venue Email: {{ event.venue.email_address }}, Venue Web: {{ event.venue.web }}
